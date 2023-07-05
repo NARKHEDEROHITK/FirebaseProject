@@ -72,10 +72,12 @@ export const getCart = createAsyncThunk('getCart', async (data, thunkAPI) => {
 
 export const decreaseQuantityCart = createAsyncThunk("decreaseQuantityCart", async (data, thunkAPI) => {
     try {
+        console.log("decrease from cart slice" , data)
         const { cartItems, cartId } = thunkAPI.getState().cart
         const { id, quantity } = data
         const index = cartItems.findIndex(item => item.id === id);
         if (index >= 0 && quantity > 1) {
+            console.log("decrease from cart slice")
             let cartProducts = [...cartItems]
             cartProducts[index] = Object.assign({}, cartProducts[index], { quantity: cartProducts[index].quantity - 1 });
             const docRef = doc(db, 'cart', cartId);

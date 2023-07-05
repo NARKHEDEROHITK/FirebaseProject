@@ -11,6 +11,8 @@ import LoginRouteOnly from "./components/LoginRouteOnly/LoginRouteOnly";
 import Checkout from "./pages/checkout/Checkout";
 import CheckoutSuccess from "./pages/checkout/CheckoutSuccess";
 import OrderHistory from "./pages/orderHistory/OrderHistory";
+import OrderDetail from "./pages/orderDetail/OrderDetail";
+import ReviewProduct from "./pages/reviewProduct/ReviewProduct";
 
 function App() {
   return (
@@ -34,6 +36,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/reset" element={<Reset />} />
           <Route path="/product-details/:id" element={<ProductDetail />} />
+          <Route path="/review-product/:id" element={<ReviewProduct />} />
           <Route path="/checkout-details" element={
             <LoginRouteOnly>
               <CheckoutDetails />
@@ -47,6 +50,11 @@ function App() {
           <Route path="/checkout-success" element={
             <LoginRouteOnly>
               <CheckoutSuccess />
+            </LoginRouteOnly>
+          } />
+          <Route path="/order-detail/:id" element={
+            <LoginRouteOnly>
+              <OrderDetail />
             </LoginRouteOnly>
           } />
           <Route path="/admin/*" element={

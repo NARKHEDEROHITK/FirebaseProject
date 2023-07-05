@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { db } from '../firebase/config';
 
-const useFetchDocByAuthId = (authId, collectionName) => {
+const useFetchDocByAuthId = (authId, collectionName,dbField) => {
     const [data, setData] = useState([])
     const [isLoading, setisLoading] = useState(false)
     const [isError , setisError ] = useState(false)
@@ -12,8 +12,8 @@ const useFetchDocByAuthId = (authId, collectionName) => {
     const getDocById = async () => {
         setisLoading(true)
        try {
-        console.log(authId , collectionName)
-        const q = query(collection(db, collectionName), where("userId", "==", authId));
+        console.log(authId , collectionName ,dbField)
+        const q = query(collection(db, collectionName), where(dbField, "==", authId));
         const querySnapshot = await getDocs(q);
         let alldocs = []
         querySnapshot.forEach((doc) => {

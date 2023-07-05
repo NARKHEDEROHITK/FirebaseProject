@@ -4,14 +4,17 @@ import { useSelector } from 'react-redux'
 import Loader from '../../components/loader/Loader'
 import styles from './OrderHistory.module.scss';
 import { FaRupeeSign } from 'react-icons/fa'
+import { useNavigate } from 'react-router-dom';
 const OrderHistory = () => {
+    const navigate = useNavigate()
     const {userId} = useSelector(state=>state.auth)
     console.log(userId)
-    const {data , isError , isLoading} = useFetchDocByAuthId(userId , 'orders')
+    const {data , isError , isLoading} = useFetchDocByAuthId(userId , 'orders','userId')
     console.log(data , isError , isLoading)
-    let filteredOrders = []
 
-    const handleClick = ()=>{}
+    const handleClick = (id)=>{
+      navigate(`/order-detail/${id}`)
+    }
 
   return (
    <>

@@ -1,4 +1,4 @@
-import { doc, getDoc } from 'firebase/firestore'
+import { collectionGroup, doc, getDoc } from 'firebase/firestore'
 import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
@@ -7,15 +7,39 @@ import spinnerImg from '../../../assets/loader.gif'
 import styles from './ProductDetail.module.scss';
 import Loader from '../../loader/Loader'
 import { FaRupeeSign } from 'react-icons/fa'
+import { useDispatch, useSelector } from 'react-redux'
+import { addToCart, decreaseQuantityCart } from '../../../redux/slices/CartSlice'
+import useFetchDocByAuthId from '../../../customHooks/useFetchDocByAuthId'
+import StarsRating from 'react-star-rate'
+import Card from '../../card/Card'
 
 const ProductDetail = () => {
+  const dispatch = useDispatch()
+  const {cartItems} = useSelector(state=>state.cart)
   const { id } = useParams()
+  const {data ,  isError} = useFetchDocByAuthId(id , 'reviews' , 'ProductId')
   const [singleProduct, setSingleProduct] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [productFromCart, setProductFromCart] = useState(null)
 
   useEffect(() => {
+   const item =  cartItems.find((item)=>item.id === id)
+   if(!item){
     getSingleProduct()
-  }, [id])
+   }else{
+    setSingleProduct(item)
+   }
+  }, [cartItems , id ])
+
+
+
+  const increaseCountByone = (product)=>{
+    dispatch(addToCart(product))
+  }
+  const decreaseCountByone = (product)=>{
+    console.log(product)
+    dispatch(decreaseQuantityCart(product))
+  }
 
   const getSingleProduct = async () => {
     try {
@@ -64,18 +88,45 @@ const ProductDetail = () => {
                   <b>Brand</b> {singleProduct.brand}
                 </p>
 
-                <div className={styles.count}>
-                  <button className="--btn">-</button>
+                <div className={styles.count} style={{display:singleProduct?.quantity ? '':'none'}} >
+                  <button className="--btn" onClick={()=>decreaseCountByone(singleProduct)} >-</button>
                   <p>
-                    <b>1</b>
+                    <b>{singleProduct?.quantity || 0}</b>
                   </p>
-                  <button className="--btn">+</button>
+                  <button className="--btn" onClick={()=>increaseCountByone(singleProduct)} >+</button>
                 </div>
-                <button className="--btn --btn-danger">ADD TO CART</button>
+                <button className="--btn --btn-danger" style={{display:singleProduct?.quantity ? 'none':''}}  onClick={()=>increaseCountByone(singleProduct)}>ADD TO CART</button>
               </div>
             </div>
           </>
         )}
+
+        <Card cardClass={styles.card}>
+          <h3>Product Reviews</h3>
+        { console.log("data ",data) }
+          <div>
+            {data.length === 0 ? (
+              <p>There are no reviews for this product yet.</p>
+            ) : (
+              <>
+                {data.map((item, index) => {
+                  const { rate, review, createdAt, userName } = item;
+                  return (
+                    <div key={index} className={styles.review}>
+                      <StarsRating value={rate} />
+                      <p>{review}</p>
+          
+                      <br />
+                      <span>
+                        <b>by: {userName}</b>
+                      </span>
+                    </div>
+                  );
+                })}
+              </>
+            )}
+          </div>
+        </Card>
       </div>
     </section>
   )
