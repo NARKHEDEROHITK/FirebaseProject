@@ -6,19 +6,18 @@ import spinnerImg from '../../assets/loader.gif'
 import { FaRupeeSign } from 'react-icons/fa'
 
 
-const OrderDetail = () => {
+const OrderDetail = ({fromPage}) => {
 
     const {id} = useParams()
 
     const {data , isError , isLoading} = useFetchSingleDoc(id , 'orders')
-    console.log(data , isError , isLoading)
 
   return (
     <section>
       <div className={`container ${styles.table}`}>
         <h2>Order Details</h2>
         <div>
-           <Link to="/order-history">&larr; Back To Orders</Link>
+           <Link to={fromPage?"/admin/orders":"/order-history"}>&larr; Back To Orders</Link>
         </div>
         <br />
         {data === null ? (
@@ -43,7 +42,7 @@ const OrderDetail = () => {
                   <th>Price</th>
                   <th>Quantity</th>
                   <th>Total</th>
-                  <th>Action</th>
+    { !fromPage &&<th>Action</th>}
                 </tr>
               </thead>
               <tbody>
@@ -67,13 +66,13 @@ const OrderDetail = () => {
                       <td>{price}</td>
                       <td>{quantity}</td>
                       <td>{(price * quantity).toFixed(2)}</td>
-                      <td className={styles.icons}>
+        { !fromPage && <td className={styles.icons}>
                         <Link to={`/review-product/${id}`}>
                           <button className="--btn --btn-primary">
                             Review Product
                           </button>
                         </Link>
-                      </td>
+                      </td>}
                     </tr>
                   );
                 })}
